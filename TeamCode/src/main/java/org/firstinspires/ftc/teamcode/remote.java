@@ -17,20 +17,17 @@ public class remote extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private final ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeftDrive = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
+    private double MaxSpeed = 0.5;
 
     @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
+        DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
+        DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
+        DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -57,6 +54,22 @@ public class remote extends LinearOpMode {
                 if(gamepad1.left_trigger>0) {
                     gamepad1.setLedColor(255, 0, 0, 500);
                 }
+            }
+
+            if(gamepad1.dpad_down) {
+                MaxSpeed = 0.5;
+            }
+
+            if(gamepad1.dpad_up) {
+                MaxSpeed = 1.0;
+            }
+
+            if(gamepad1.dpad_left) {
+                MaxSpeed = 0.25;
+            }
+
+            if(gamepad1.dpad_right) {
+                MaxSpeed = 0.75;
             }
 
             double max;
@@ -86,6 +99,10 @@ public class remote extends LinearOpMode {
                 backRightPower  /= max;
             }
 
+            frontLeftPower *= MaxSpeed;
+            frontRightPower *= MaxSpeed;
+            backLeftPower *= MaxSpeed;
+            backRightPower *= MaxSpeed;
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);

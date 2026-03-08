@@ -29,6 +29,7 @@ public class remote extends LinearOpMode {
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        DcMotor Shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         frontled = hardwareMap.get(Servo.class, "frontled");
 
@@ -61,25 +62,53 @@ public class remote extends LinearOpMode {
                 }
             }
 
+            /*
+            heres a table to show every acsesable color and the max speed you need to show it, feel fre to edit it to show what you see instead of what I see
+            0.0 =
+            0.05 =
+            0.1 =
+            0.15 =
+            0.2 =
+            0.25 =
+            0.3 =
+            0.35 =
+            0.4 =
+            0.45 =
+            0.5 =
+            0.55 =
+            0.6 =
+            0.65 =
+            0.7 =
+            0.75 =
+            0.8 =
+            0.85 =
+            0.9 =
+            0.95 =
+            1 =
+             */
+
             if(gamepad1.dpad_down) {
-                MaxSpeed = 0.5;
-                ledHeadlight.setPosition(0.0);
+                MaxSpeed = MaxSpeed - 0.05;
             }
 
             if(gamepad1.dpad_up) {
-                MaxSpeed = 1.0;
-                ledHeadlight.setPosition(1.0);
+                MaxSpeed = MaxSpeed + 0.05;
             }
 
-            if(gamepad1.dpad_left) {
-                MaxSpeed = 0.25;
+            if(gamepad1.y)  {
+                Shooter.setPower(1);
+            } else if (gamepad1.a) {
+                Shooter.setPower(0.5);
+            }
+            else{
+                Shooter.setPower(0);
             }
 
-            if(gamepad1.dpad_right) {
-                MaxSpeed = 0.75;
-            }
 
-            frontled.setPosition(0.0);
+
+            ledHeadlight.setPosition(MaxSpeed);
+
+            frontled.setPosition(MaxSpeed);
             frontled.getPosition();
 
             double max;

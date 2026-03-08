@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -18,6 +18,7 @@ public class remote extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private final ElapsedTime runtime = new ElapsedTime();
     private double MaxSpeed = 0.5;
+    Servo frontled;
 
     @Override
     public void runOpMode() {
@@ -28,6 +29,8 @@ public class remote extends LinearOpMode {
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+
+        frontled = hardwareMap.get(Servo.class, "frontled");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -40,11 +43,13 @@ public class remote extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses START)
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized. Updated 2/15/26 at 2:16pm");
         telemetry.update();
 
         waitForStart();
         runtime.reset();
+
+        Servo ledHeadlight = hardwareMap.get(Servo.class, "led_headlight");
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -58,10 +63,12 @@ public class remote extends LinearOpMode {
 
             if(gamepad1.dpad_down) {
                 MaxSpeed = 0.5;
+                ledHeadlight.setPosition(0.0);
             }
 
             if(gamepad1.dpad_up) {
                 MaxSpeed = 1.0;
+                ledHeadlight.setPosition(1.0);
             }
 
             if(gamepad1.dpad_left) {
@@ -71,6 +78,9 @@ public class remote extends LinearOpMode {
             if(gamepad1.dpad_right) {
                 MaxSpeed = 0.75;
             }
+
+            frontled.setPosition(0.0);
+            frontled.getPosition();
 
             double max;
 
@@ -114,6 +124,7 @@ public class remote extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
+            telemetry.addData("Front LED", "%4.2f", frontled.getPosition());
             telemetry.update();
         }
     }}

@@ -19,6 +19,7 @@ public class remote extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private double MaxSpeed = 0.5;
     Servo frontled;
+    private double ShooterSpeed = 0.5;
 
     @Override
     public void runOpMode() {
@@ -28,7 +29,7 @@ public class remote extends LinearOpMode {
         DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        //DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         DcMotor Shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         frontled = hardwareMap.get(Servo.class, "frontled");
@@ -36,12 +37,12 @@ public class remote extends LinearOpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized. Updated 2/15/26 at 2:16pm");
@@ -50,7 +51,6 @@ public class remote extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        Servo ledHeadlight = hardwareMap.get(Servo.class, "led_headlight");
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -64,49 +64,56 @@ public class remote extends LinearOpMode {
 
             /*
             heres a table to show every acsesable color and the max speed you need to show it, feel fre to edit it to show what you see instead of what I see
-            0.0 =
-            0.05 =
-            0.1 =
-            0.15 =
-            0.2 =
-            0.25 =
-            0.3 =
-            0.35 =
-            0.4 =
-            0.45 =
-            0.5 =
-            0.55 =
-            0.6 =
-            0.65 =
-            0.7 =
-            0.75 =
-            0.8 =
-            0.85 =
-            0.9 =
-            0.95 =
-            1 =
+            0.0 = off
+            0.05 = off
+            0.1 = off
+            0.15 = off
+            0.2 = off
+            0.25 = off
+            0.3 = orange
+            0.35 = yellow
+            0.4 = yellowish-green
+            0.45 = green
+            0.5 = green
+            0.55 = teal
+            0.6 = blue
+            0.65 = purplish-blue
+            0.7 = lavender
+            0.75 = white
+            0.8 = white
+            0.85 = white
+            0.9 = white
+            0.95 = white
+            1 = white
              */
 
             if(gamepad1.dpad_down) {
                 MaxSpeed = MaxSpeed - 0.05;
+                sleep(1000);
             }
 
             if(gamepad1.dpad_up) {
                 MaxSpeed = MaxSpeed + 0.05;
+                sleep(1000);
             }
 
-            if(gamepad1.y)  {
-                Shooter.setPower(1);
-            } else if (gamepad1.a) {
-                Shooter.setPower(0.5);
+            if(gamepad1.y) {
+                ShooterSpeed = ShooterSpeed + 0.1;
+                sleep(1000);
             }
-            else{
+
+            if(gamepad1.a) {
+                ShooterSpeed = ShooterSpeed - 0.1;
+                sleep(1000);
+            }
+
+            if (gamepad1.right_trigger > 0) {
+                Shooter.setPower(ShooterSpeed);
+            }
+            else {
                 Shooter.setPower(0);
             }
 
-
-
-            ledHeadlight.setPosition(MaxSpeed);
 
             frontled.setPosition(MaxSpeed);
             frontled.getPosition();
@@ -147,13 +154,14 @@ public class remote extends LinearOpMode {
             frontLeftDrive.setPower(frontLeftPower);
             frontRightDrive.setPower(frontRightPower);
             backLeftDrive.setPower(backLeftPower);
-            backRightDrive.setPower(backRightPower);
+            //backRightDrive.setPower(backRightPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
             telemetry.addData("Front LED", "%4.2f", frontled.getPosition());
+            telemetry.addData("Shoter Speed", "%4.2f", ShooterSpeed);
             telemetry.update();
         }
     }}

@@ -89,12 +89,12 @@ public class remote extends LinearOpMode {
 
             if(gamepad1.dpad_down) {
                 MaxSpeed = MaxSpeed - 0.05;
-                sleep(1000);
+                sleep(500);
             }
 
             if(gamepad1.dpad_up) {
                 MaxSpeed = MaxSpeed + 0.05;
-                sleep(1000);
+                sleep(500);
             }
 
             if(gamepad1.y) {
@@ -105,6 +105,12 @@ public class remote extends LinearOpMode {
             if(gamepad1.a) {
                 ShooterSpeed = ShooterSpeed - 0.1;
                 sleep(1000);
+            }
+
+            if(gamepad1.x) {
+                // get red value
+                ShooterSpeed = 0.26;
+                // every one starts singing ""
             }
 
             if (gamepad1.right_trigger > 0) {

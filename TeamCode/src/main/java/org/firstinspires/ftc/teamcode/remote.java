@@ -19,6 +19,7 @@ public class remote extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private double MaxSpeed = 0.5;
     Servo frontled;
+    Servo backled;
     private double ShooterSpeed = 0.5;
 
     @Override
@@ -33,6 +34,7 @@ public class remote extends LinearOpMode {
         DcMotor Shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         frontled = hardwareMap.get(Servo.class, "frontled");
+        backled = hardwareMap.get(Servo.class, "backled");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -115,14 +117,15 @@ public class remote extends LinearOpMode {
 
             if (gamepad1.right_trigger > 0) {
                 Shooter.setPower(ShooterSpeed);
+                backled.setPosition(0.5);
             }
             else {
                 Shooter.setPower(0);
+                backled.setPosition(0.3);
             }
 
 
             frontled.setPosition(MaxSpeed);
-            frontled.getPosition();
 
             double max;
 
@@ -167,7 +170,8 @@ public class remote extends LinearOpMode {
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
             telemetry.addData("Front LED", "%4.2f", frontled.getPosition());
-            telemetry.addData("Shoter Speed", "%4.2f", ShooterSpeed);
+            telemetry.addData( "Back LED", "%4.2f", backled.getPosition());
+            telemetry.addData("Shooter Speed", "%4.2f", ShooterSpeed);
             telemetry.update();
         }
     }}

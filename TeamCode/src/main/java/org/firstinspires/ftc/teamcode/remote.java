@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,7 +21,10 @@ public class remote extends LinearOpMode {
     private double MaxSpeed = 0.5;
     Servo frontled;
     Servo backled;
+    CRServo trigger1;
+    CRServo trigger2;
     private double ShooterSpeed = 0.5;
+
 
     @Override
     public void runOpMode() {
@@ -35,6 +39,8 @@ public class remote extends LinearOpMode {
 
         frontled = hardwareMap.get(Servo.class, "frontled");
         backled = hardwareMap.get(Servo.class, "backled");
+        trigger1 = hardwareMap.get(CRServo.class, "trigger1");
+        trigger2 = hardwareMap.get(CRServo.class, "trigger2");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -116,15 +122,17 @@ public class remote extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger > 0) {
-                Shooter.setPower(ShooterSpeed);
+                trigger1.setPower(1);
+                trigger2.setPower(-1);
                 backled.setPosition(0.5);
             }
             else {
-                Shooter.setPower(0);
+                trigger1.setPower(0);
+                trigger2.setPower(0);
                 backled.setPosition(0.3);
             }
 
-
+            Shooter.setPower(ShooterSpeed);
             frontled.setPosition(MaxSpeed);
 
             double max;

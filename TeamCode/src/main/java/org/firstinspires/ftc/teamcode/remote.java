@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -34,7 +35,7 @@ public class remote extends LinearOpMode {
         DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        //DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         DcMotor Shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         frontled = hardwareMap.get(Servo.class, "frontled");
@@ -42,15 +43,15 @@ public class remote extends LinearOpMode {
         trigger1 = hardwareMap.get(CRServo.class, "trigger1");
         trigger2 = hardwareMap.get(CRServo.class, "trigger2");
 
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized. Updated 2/15/26 at 2:16pm");
@@ -113,6 +114,10 @@ public class remote extends LinearOpMode {
             if(gamepad1.a) {
                 ShooterSpeed = ShooterSpeed - 0.1;
                 sleep(1000);
+            }
+
+            if(gamepad1.right_bumper) {
+                ShooterSpeed = 0;
             }
 
             if(gamepad1.x) {

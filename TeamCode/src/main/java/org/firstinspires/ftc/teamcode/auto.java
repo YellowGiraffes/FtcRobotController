@@ -18,7 +18,7 @@ public class auto extends LinearOpMode {
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
 
-    @Override./gradlew --stop
+    @Override
     public void runOpMode() {
 
         /* Declare OpMode members. */

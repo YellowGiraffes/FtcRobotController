@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -33,9 +34,9 @@ public class remote extends LinearOpMode {
         frontled = hardwareMap.get(Servo.class, "frontled");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -49,7 +50,6 @@ public class remote extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        Servo ledHeadlight = hardwareMap.get(Servo.class, "led_headlight");
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -63,12 +63,12 @@ public class remote extends LinearOpMode {
 
             if(gamepad1.dpad_down) {
                 MaxSpeed = 0.5;
-                ledHeadlight.setPosition(0.0);
+                frontled.setPosition(0.0);
             }
 
             if(gamepad1.dpad_up) {
                 MaxSpeed = 1.0;
-                ledHeadlight.setPosition(1.0);
+                frontled.setPosition(1.0);
             }
 
             if(gamepad1.dpad_left) {

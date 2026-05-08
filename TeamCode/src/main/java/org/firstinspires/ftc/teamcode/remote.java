@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,11 +18,11 @@ public class remote extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private final ElapsedTime runtime = new ElapsedTime();
-    private double MaxSpeed = 0.5;
+    private double MaxWheelSpeed = 0.75;
     Servo frontled;
     CRServo trigger1;
     CRServo trigger2;
-    private double ShooterSpeed = 0.5;
+    private double ShooterSpeed = 0.55;
 
     @Override
     public void runOpMode() {
@@ -61,31 +60,29 @@ public class remote extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if(gamepad1.right_trigger>0) {
-                gamepad1.rumble(500);
-                if(gamepad1.left_trigger>0) {
-                    gamepad1.setLedColor(255, 0, 0, 500);
-                }
-            }
-
-            if(gamepad1.dpad_down) {
-                ShooterSpeed = ShooterSpeed - 0.001;
+            if(gamepad1.y) {
+                ShooterSpeed = ShooterSpeed + 0.001;
                 Shooter.setPower(ShooterSpeed);
                 frontled.setPosition(0.0);
             }
 
-            if(gamepad1.dpad_up) {
-                ShooterSpeed = ShooterSpeed + 0.001;
+            if(gamepad1.a) {
+                ShooterSpeed = ShooterSpeed - 0.001;
                 Shooter.setPower(ShooterSpeed);
                 frontled.setPosition(1.0);
             }
 
-            if(gamepad1.dpad_left) {
-                MaxSpeed = 0.25;
+            if(gamepad1.dpad_down) {
+                MaxWheelSpeed = 0.25;
             }
-
+            if(gamepad1.dpad_left) {
+                MaxWheelSpeed = 0.5;
+            }
+            if(gamepad1.dpad_up) {
+                MaxWheelSpeed = 1;
+            }
             if(gamepad1.dpad_right) {
-                MaxSpeed = 0.75;
+                MaxWheelSpeed = 0.75;
             }
 
             if(gamepad1.right_trigger > 0) {
@@ -127,10 +124,10 @@ public class remote extends LinearOpMode {
                 backRightPower  /= max;
             }
 
-            frontLeftPower *= MaxSpeed;
-            frontRightPower *= MaxSpeed;
-            backLeftPower *= MaxSpeed;
-            backRightPower *= MaxSpeed;
+            frontLeftPower *= MaxWheelSpeed;
+            frontRightPower *= MaxWheelSpeed;
+            backLeftPower *= MaxWheelSpeed;
+            backRightPower *= MaxWheelSpeed;
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);
@@ -140,7 +137,7 @@ public class remote extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime);
-            telemetry.addData("Wheel max power", "%4.2f", MaxSpeed);
+            telemetry.addData("Wheel max power", "%4.2f", MaxWheelSpeed);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
             telemetry.addData("Front LED", "%4.2f", frontled.getPosition());

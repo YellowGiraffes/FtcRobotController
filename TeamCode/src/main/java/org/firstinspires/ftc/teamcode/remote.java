@@ -18,11 +18,11 @@ public class remote extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private final ElapsedTime runtime = new ElapsedTime();
-    private double MaxWheelSpeed = 0.75;
+    private double maxWheelSpeed = 0.75;
     Servo frontled;
     CRServo trigger1;
     CRServo trigger2;
-    private double ShooterSpeed = 0.55;
+    private double shooterSpeed = 0.55;
 
     @Override
     public void runOpMode() {
@@ -33,7 +33,7 @@ public class remote extends LinearOpMode {
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-        DcMotor Shooter = hardwareMap.get(DcMotor.class, "Shooter");
+        DcMotor shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         frontled = hardwareMap.get(Servo.class, "frontled");
         trigger1 = hardwareMap.get(CRServo.class, "trigger1");
@@ -56,33 +56,33 @@ public class remote extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        Shooter.setPower(ShooterSpeed);
+        shooter.setPower(shooterSpeed);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
             if(gamepad1.y) {
-                ShooterSpeed = ShooterSpeed + 0.001;
-                Shooter.setPower(ShooterSpeed);
+                shooterSpeed = Math.min(1.0, shooterSpeed + 0.001);
+                shooter.setPower(shooterSpeed);
                 frontled.setPosition(0.0);
             }
 
             if(gamepad1.a) {
-                ShooterSpeed = ShooterSpeed - 0.001;
-                Shooter.setPower(ShooterSpeed);
+                shooterSpeed = Math.max(0.0, shooterSpeed - 0.001);
+                shooter.setPower(shooterSpeed);
                 frontled.setPosition(1.0);
             }
 
             if(gamepad1.dpad_down) {
-                MaxWheelSpeed = 0.25;
+                maxWheelSpeed = 0.25;
             }
             if(gamepad1.dpad_left) {
-                MaxWheelSpeed = 0.5;
+                maxWheelSpeed = 0.5;
             }
             if(gamepad1.dpad_up) {
-                MaxWheelSpeed = 1;
+                maxWheelSpeed = 1.0;
             }
             if(gamepad1.dpad_right) {
-                MaxWheelSpeed = 0.75;
+                maxWheelSpeed = 0.75;
             }
 
             if(gamepad1.right_trigger > 0) {
@@ -94,9 +94,6 @@ public class remote extends LinearOpMode {
                 trigger2.setPower(0);
             }
 
-            frontled.setPosition(0.0);
-            frontled.getPosition();
-
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
@@ -104,12 +101,17 @@ public class remote extends LinearOpMode {
             double lateral = -gamepad1.left_stick_x;
             double yaw     = gamepad1.right_stick_x;
 
+            // Joystick deadband: ignore small drift near center
+            if (Math.abs(axial)   < 0.05) axial   = 0;
+            if (Math.abs(lateral) < 0.05) lateral = 0;
+            if (Math.abs(yaw)     < 0.05) yaw     = 0;
+
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double frontLeftPower  = axial + lateral - yaw;
-            double frontRightPower = axial - lateral + yaw;
+            double frontRightPower = axial + lateral + yaw;
             double backLeftPower   = axial - lateral - yaw;
-            double backRightPower  = axial + lateral + yaw;
+            double backRightPower  = axial - lateral + yaw;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -124,10 +126,10 @@ public class remote extends LinearOpMode {
                 backRightPower  /= max;
             }
 
-            frontLeftPower *= MaxWheelSpeed;
-            frontRightPower *= MaxWheelSpeed;
-            backLeftPower *= MaxWheelSpeed;
-            backRightPower *= MaxWheelSpeed;
+            frontLeftPower *= maxWheelSpeed;
+            frontRightPower *= maxWheelSpeed;
+            backLeftPower *= maxWheelSpeed;
+            backRightPower *= maxWheelSpeed;
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);
@@ -137,11 +139,11 @@ public class remote extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime);
-            telemetry.addData("Wheel max power", "%4.2f", MaxWheelSpeed);
+            telemetry.addData("Wheel max power", "%4.2f", maxWheelSpeed);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
             telemetry.addData("Front LED", "%4.2f", frontled.getPosition());
-            telemetry.addData("Shooter speed", "%4.2f", Shooter.getPower());
+            telemetry.addData("Shooter speed", "%4.2f", shooter.getPower());
             telemetry.update();
         }
     }}

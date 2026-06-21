@@ -2,49 +2,26 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 @Autonomous(name="auto mateo", group="Robot")
-public class auto extends LinearOpMode {
-    private ElapsedTime     runtime = new ElapsedTime();
+public class Auto extends LinearOpMode {
 
-    private ElapsedTime     functiontime = new ElapsedTime();
-
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
-
-    DcMotor frontLeftDrive;
-    DcMotor backLeftDrive;
-    DcMotor frontRightDrive;
-    DcMotor backRightDrive;
+    private final ElapsedTime runtime      = new ElapsedTime();
+    private final ElapsedTime functionTime = new ElapsedTime();
+    private final Yoshi robot              = new Yoshi();
 
     @Override
     public void runOpMode() {
+        robot.init(hardwareMap);
 
-        /* Declare OpMode members. */
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
-        // Wait for the game to start (driver presses START)
         waitForStart();
+        runtime.reset();
 
+        // Tweak this sequence each season to match the new autonomous routine.
         moveForwardAndBackward(0.5, 2);
         moveForwardAndBackward(-0.7, 1);
         moveLeftAndRight(0.4, 1);
@@ -55,40 +32,44 @@ public class auto extends LinearOpMode {
         sleep(1000);
     }
 
-    void moveForwardAndBackward(double speed, double maxDuration) {
-        functiontime.reset();
-
-        frontLeftDrive.setPower(speed);
-        frontRightDrive.setPower(speed);
-        backLeftDrive.setPower(speed);
-        backRightDrive.setPower(speed);
-
-        while(functiontime.seconds()<maxDuration) {
+    private void moveForwardAndBackward(double speed, double maxDuration) {
+        functionTime.reset();
+        // axial = forward/back, no lateral or yaw
+        robot.drive(speed, 0, 0, 1.0);
+        while (opModeIsActive() && functionTime.seconds() < maxDuration) {
             sleep(10);
         }
-
-        stopMoving();
+        robot.stopDrive();
     }
 
-    void moveLeftAndRight(double speed, double maxDuration) {
-        functiontime.reset();
-
-        frontLeftDrive.setPower(speed);
-        frontRightDrive.setPower(-speed);
-        backLeftDrive.setPower(-speed);
-        backRightDrive.setPower(speed);
-
-        while(functiontime.seconds()<maxDuration) {
+    private void moveLeftAndRight(double speed, double maxDuration) {
+        functionTime.reset();
+        // lateral = strafe, no axial or yaw
+        robot.drive(0, speed, 0, 1.0);
+        while (opModeIsActive() && functionTime.seconds() < maxDuration) {
             sleep(10);
         }
-
-        stopMoving();
+        robot.stopDrive();
     }
 
-    void stopMoving() {
-        frontLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        backLeftDrive.setPower(0);
-        backRightDrive.setPower(0);
+    private void turn(double speed, double maxDuration) {
+        // Positive speed = clockwise, negative = counter-clockwise.
+        functionTime.reset();
+        robot.drive(0, 0, speed, 1.0);
+        while (opModeIsActive() && functionTime.seconds() < maxDuration) {
+            sleep(10);
+        }
+        robot.stopDrive();
+    }
+
+    private void shoot(double shooterSpeed, double duration) {
+        robot.setShooterPower(shooterSpeed);
+        robot.fireTrigger();
+        functionTime.reset();
+        while (opModeIsActive() && functionTime.seconds() < duration) {
+            sleep(10);
+        }
+        robot.stopTrigger();
+        robot.setShooterPower(0);
     }
 }

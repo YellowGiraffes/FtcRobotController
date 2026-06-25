@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 /**
  * Owns every piece of hardware on the robot and exposes high-level actions
@@ -19,6 +23,7 @@ public class Yoshi {
     public Servo   frontLed;
     public CRServo trigger1;
     public CRServo trigger2;
+    public GoBildaPinpointDriver odometry;
 
     /** Call once at the top of every OpMode's runOpMode(). */
     public void init(HardwareMap hardwareMap) {
@@ -41,6 +46,14 @@ public class Yoshi {
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        odometry = hardwareMap.get(GoBildaPinpointDriver.class, RobotConstants.PINPOINT);
+        odometry.setOffsets(RobotConstants.ODO_X_OFFSET_MM, RobotConstants.ODO_Y_OFFSET_MM, DistanceUnit.MM);
+        odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odometry.setEncoderDirections(
+                GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odometry.resetPosAndIMU();
     }
 
     /**
@@ -97,5 +110,26 @@ public class Yoshi {
     // LED
     public void setLedPosition(double position) {
         frontLed.setPosition(position);
+    }
+
+    // Odometry
+    public void updateOdometry() {
+        odometry.update();
+    }
+
+    public Pose2D getPosition() {
+        return odometry.getPosition();
+    }
+
+    public double getHeadingDegrees() {
+        return odometry.getPosition().getHeading(AngleUnit.DEGREES);
+    }
+
+    public double getXMM() {
+        return odometry.getPosition().getX(DistanceUnit.MM);
+    }
+
+    public double getYMM() {
+        return odometry.getPosition().getY(DistanceUnit.MM);
     }
 }

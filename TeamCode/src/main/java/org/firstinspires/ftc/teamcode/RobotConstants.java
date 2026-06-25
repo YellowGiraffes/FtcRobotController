@@ -17,6 +17,14 @@ public final class RobotConstants {
     public static final String TRIGGER_1         = "trigger1";
     public static final String TRIGGER_2         = "trigger2";
 
+    // Odometry (GoBilda Pinpoint — must match Robot Controller config)
+    public static final String PINPOINT          = "pinpoint";
+    // Distance of each pod from the robot center in mm.
+    // Positive X = in front of center, positive Y = left of center.
+    // Measure on your robot and update these before competition.
+    public static final double ODO_X_OFFSET_MM   = 0.0;
+    public static final double ODO_Y_OFFSET_MM   = 0.0;
+
     // Drive
     public static final double DEFAULT_MAX_WHEEL_SPEED = 0.75;
     public static final double SLOW_WHEEL_SPEED   = 0.25;

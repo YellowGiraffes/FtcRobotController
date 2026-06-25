@@ -1,0 +1,10 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(rocket) Send to the robot $(robot)",
+            "task": "Deploy to Control Hub (USB/WiFi)",
+            "tooltip": "Build and deploy to REV Control Hub"
+        }
+    ]
+}

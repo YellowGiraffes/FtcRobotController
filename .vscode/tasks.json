@@ -1,0 +1,56 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build TeamCode",
+            "type": "shell",
+            "command": ".\\gradlew.bat",
+            "args": [":TeamCode:assembleDebug"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Deploy to Control Hub (USB/WiFi)",
+            "type": "shell",
+            "command": ".\\gradlew.bat",
+            "args": [":TeamCode:installDebug"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Connect to Control Hub over WiFi",
+            "type": "shell",
+            "command": "adb",
+            "args": ["connect", "192.168.43.1:5555"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Connect WiFi then Deploy",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Connect to Control Hub over WiFi",
+                "Deploy to Control Hub (USB/WiFi)"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}

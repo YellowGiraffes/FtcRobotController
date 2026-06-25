@@ -22,6 +22,9 @@ allprojects {
         mavenCentral()
         google()
     }
+
+    // Redirect build output outside of OneDrive to prevent sync conflicts
+    buildDir = "${System.getProperty('user.home')}/.gradle/ftc-builds/${rootProject.name}/${project.name}"
 }
 
 repositories {

@@ -28,3 +28,9 @@ android {
 }
 
 apply from: '../build.dependencies.gradle'
+
+afterEvaluate {
+    tasks.withType(JavaCompile).each {
+        it.options.compilerArgs << '-Xlint:-deprecation'
+    }
+}

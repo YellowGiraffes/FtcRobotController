@@ -17,14 +17,14 @@
         {
             "label": "Deploy to Control Hub (USB/WiFi)",
             "type": "shell",
-            "command": ".\\gradlew.bat",
-            "args": [":TeamCode:installDebug"],
+            "command": "powershell",
+            "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\.vscode\\deploy.ps1"],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "presentation": {
-                "echo": true,
+                "echo": false,
                 "reveal": "always",
                 "panel": "shared"
             },
@@ -39,6 +39,32 @@
                 "echo": true,
                 "reveal": "always",
                 "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "View Robot Logs",
+            "type": "shell",
+            "command": "adb",
+            "args": ["logcat", "-s", "DriveToPos"],
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Check Robot Connection",
+            "type": "shell",
+            "command": "powershell",
+            "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\.vscode\\check-connection.ps1"],
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
             },
             "problemMatcher": []
         },

@@ -5,6 +5,16 @@
             "label": "$(rocket) Send to the robot $(robot)",
             "task": "Deploy to Control Hub (USB/WiFi)",
             "tooltip": "Build and deploy to REV Control Hub"
+        },
+        {
+            "label": "$(check) The robot is connected",
+            "task": "Check Robot Connection",
+            "tooltip": "Check if the Control Hub is connected over USB or WiFi"
+        },
+        {
+            "label": "$(output) View robot logs",
+            "task": "View Robot Logs",
+            "tooltip": "Stream DriveToPos logs from the robot via ADB"
         }
     ]
 }

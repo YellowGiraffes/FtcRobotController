@@ -25,6 +25,11 @@ allprojects {
 
     // Redirect build output outside of OneDrive to prevent sync conflicts
     buildDir = "${System.getProperty('user.home')}/.gradle/ftc-builds/${rootProject.name}/${project.name}"
+
+    // Suppress all javac warnings and notes (obsolete source/target, deprecated API, etc.)
+    tasks.withType(JavaCompile).configureEach {
+        options.warnings = false
+    }
 }
 
 repositories {
